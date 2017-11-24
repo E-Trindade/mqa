@@ -1,0 +1,154 @@
+#ds = read.csv('300k.csv', nrows=500)
+
+ds = read.csv('300k.csv')
+
+dim(subset(ds, ds$city=="New_York"))
+
+levels(ds$continent) = list(
+  America=c('America/Argentina','America/Indiana','America/Kentucky'),
+  Africa=c('Africa'),
+  Asia=c('Asia'),
+  Oceania=c('Atlantic', 'Australia'),
+  Europe=c('Europe', 'Indian', 'Pacific')
+)
+
+ds$isRare <- ifelse(
+  ds$pokemonId == 1 |
+    ds$pokemonId == 2 |
+    ds$pokemonId == 3 |
+    ds$pokemonId == 4 |
+    ds$pokemonId == 5 |
+    ds$pokemonId == 6 |
+    ds$pokemonId == 7 |
+    ds$pokemonId == 8 |
+    ds$pokemonId == 9 |
+    ds$pokemonId == 25 |
+    ds$pokemonId == 26 |
+    ds$pokemonId == 27 |
+    ds$pokemonId == 28 |
+    ds$pokemonId == 35 |
+    ds$pokemonId == 36 |
+    ds$pokemonId == 37 |
+    ds$pokemonId == 38 |
+    ds$pokemonId == 39 |
+    ds$pokemonId == 50 |
+    ds$pokemonId == 51 |
+    ds$pokemonId == 52 |
+    ds$pokemonId == 53 |
+    ds$pokemonId == 54 |
+    ds$pokemonId == 55 |
+    ds$pokemonId == 56 |
+    ds$pokemonId == 63 |
+    ds$pokemonId == 64 |
+    ds$pokemonId == 65 |
+    ds$pokemonId == 66 |
+    ds$pokemonId == 67 |
+    ds$pokemonId == 68 |
+    ds$pokemonId == 72 |
+    ds$pokemonId == 73 |
+    ds$pokemonId == 74 |
+    ds$pokemonId == 75 |
+    ds$pokemonId == 76 |
+    ds$pokemonId == 77 |
+    ds$pokemonId == 78 |
+    ds$pokemonId == 79 |
+    ds$pokemonId == 80 |
+    ds$pokemonId == 81 |
+    ds$pokemonId == 82 |
+    ds$pokemonId == 86 |
+    ds$pokemonId == 87 |
+    ds$pokemonId == 90 |
+    ds$pokemonId == 91 |
+    ds$pokemonId == 95 |
+    ds$pokemonId == 100 |
+    ds$pokemonId == 101 |
+    ds$pokemonId == 102 |
+    ds$pokemonId == 103 |
+    ds$pokemonId == 104 |
+    ds$pokemonId == 105 |
+    ds$pokemonId == 109 |
+    ds$pokemonId == 110 |
+    ds$pokemonId == 111 |
+    ds$pokemonId == 112 |
+    ds$pokemonId == 114 |
+    ds$pokemonId == 116 |
+    ds$pokemonId == 117 |
+    ds$pokemonId == 118 |
+    ds$pokemonId == 119 |
+    ds$pokemonId == 123 |
+    ds$pokemonId == 124 |
+    ds$pokemonId == 125 |
+    ds$pokemonId == 126 |
+    ds$pokemonId == 128 |
+    ds$pokemonId == 134 |
+    ds$pokemonId == 135 |
+    ds$pokemonId == 136 |
+    ds$pokemonId == 138 |
+    ds$pokemonId == 139 |
+    ds$pokemonId == 140 |
+    ds$pokemonId == 141 |
+    ds$pokemonId == 143 |
+    ds$pokemonId == 147 |
+    ds$pokemonId == 148 |
+    ds$pokemonId == 149,
+  TRUE, FALSE)
+
+# Muito raros
+ds$isVeryRare <- ifelse(
+  ds$pokemonId == 88 |
+    ds$pokemonId == 89 |
+    ds$pokemonId == 106 |
+    ds$pokemonId == 107 |
+    ds$pokemonId == 108 |
+    ds$pokemonId == 113 |
+    ds$pokemonId == 130 |
+    ds$pokemonId == 137 |
+    ds$pokemonId == 142 |
+    ds$pokemonId == 83 |
+    ds$pokemonId == 132 |
+    ds$pokemonId == 144 |
+    ds$pokemonId == 145 |
+    ds$pokemonId == 146 |
+    ds$pokemonId == 150 |
+    ds$pokemonId == 151 |
+    ds$pokemonId == 115 |
+    ds$pokemonId == 122 |
+    ds$pokemonId == 131,
+  TRUE, FALSE)
+
+ds$classif <- ifelse(ds$isRare == TRUE, "rare", "NONE")
+ds$classif <- ifelse(ds$isVeryRare == TRUE, "very rare", ds$classif)
+ds$classif <- ifelse(ds$classif == "NONE", "common", ds$classif)
+
+plot(c(1,2,3))
+
+barplot(ds$classif, ds$population_density)
+
+ggplot(ds, aes(x=classif, y=population_density)) +
+  coord_flip() +  
+  geom_bar() +
+  #ggtitle("Aparições do Lapras em relação à proximidade com a água") +
+  ylab("Frequência")
+
+pred_set = ds[, c(
+  #'latitude',
+  #'longitude', 
+  'temperature', 
+  'windSpeed', 
+  #'windBearing', 
+  'pressure', 
+  'population_density', 
+  'gymDistanceKm',
+  'classif'
+)]
+bk = pred_set
+#set$classif = factor(set$classif, levels = c(0, 1, 2))
+
+pred_set$temperature = scale(pred_set$temperature)
+pred_set$windSpeed = scale(pred_set$windSpeed)
+pred_set$pressure = scale(pred_set$pressure)
+pred_set$population_density = scale(pred_set$population_density)
+pred_set$gymDistanceKm = scale(pred_set$gymDistanceKm)
+pred_set$classif = as.factor(pred_set$classif)
+
+plot(pred_set)
